@@ -60,6 +60,21 @@ public class FinancialTracker {
     }
 
     public static void loadTransactions(String fileName) {
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(fileName));
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] parts = line.split("\\|");
+                LocalDate date = LocalDate.parse(parts[0], DATE_FORMATTER);
+                LocalTime time = LocalTime.parse(parts[1], TIME_FORMATTER);
+                String description = parts[2];
+                String vendor = parts[3];
+                double amount = Double.parseDouble(parts[4]);
+                transactions.add(new Transaction(date, time, description, vendor, amount));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         // This method should load transactions from a file with the given file name.
         // If the file does not exist, it should be created.
         // The transactions should be stored in the `transactions` ArrayList.
@@ -71,6 +86,25 @@ public class FinancialTracker {
     }
 
     private static void addDeposit(Scanner scanner) {
+        System.out.println("Please enter the following: ");
+        System.out.println("Date (yyyy-MM-dd): ");
+        String date = scanner.nextLine();
+        LocalDate date1 = LocalDate.parse(date);
+
+        System.out.println("Time: ");
+        String time = scanner.nextLine();
+        LocalTime time1 = LocalTime.parse(time);
+
+        System.out.println("Description");
+        String description = scanner.nextLine();
+
+        System.out.println("Vendor: ");
+        String vendor = scanner.nextLine();
+
+        System.out.println("Amount: ");
+        double amount = scanner.nextDouble();
+
+        
         // This method should prompt the user to enter the date, time, vendor, and amount of a deposit.
         // The user should enter the date and time in the following format: yyyy-MM-dd HH:mm:ss
         // The amount should be a positive number.
