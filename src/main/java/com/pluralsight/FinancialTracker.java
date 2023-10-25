@@ -85,26 +85,41 @@ public class FinancialTracker {
         // If any errors occur, an appropriate error message should be displayed.
     }
 
-    private static void addDeposit(Scanner scanner) {
-        System.out.println("Please enter the following: ");
-        System.out.println("Date (yyyy-MM-dd): ");
-        String date = scanner.nextLine();
-        LocalDate date1 = LocalDate.parse(date);
+    private static void addDeposit(Scanner scanner) throws IOException {
+        BufferedWriter writer = new BufferedWriter(new FileWriter((FILE_NAME, true));
 
-        System.out.println("Time: ");
-        String time = scanner.nextLine();
-        LocalTime time1 = LocalTime.parse(time);
+        System.out.println("Please enter the date in this format: (yyyy-MM-dd)");
+        String inputD = scanner.nextLine();
+        LocalDate realDate = LocalDate.parse(inputD, DATE_FORMATTER);
+        System.out.println(realDate);
 
-        System.out.println("Description");
+        // Prompt the user to enter the time in the specified format and parse it
+        System.out.println("Please enter the time of the deposit in this format: (HH:mm:ss)");
+        String inputT = scanner.nextLine();
+        LocalTime realTime = LocalTime.parse(inputT, TIME_FORMATTER);
+        System.out.println(realTime);
+
+        // Prompt the user to enter the name of the description
+        System.out.println("Please enter the name of the description: ");
         String description = scanner.nextLine();
 
-        System.out.println("Vendor: ");
+        // Prompt the user to enter the name of the vendor
+        System.out.println("Please enter the name of the vendor: ");
         String vendor = scanner.nextLine();
 
-        System.out.println("Amount: ");
-        double amount = scanner.nextDouble();
+        // Prompt the user to enter the amount to deposit and validate it
+        System.out.println("Please enter the amount you'd like to deposit: $");
+        double depositDouble = scanner.nextDouble();
+        scanner.nextLine();
 
-        
+        // Check if the deposit amount is negative and handle the error
+        if (depositDouble < 0) {
+            System.out.println("Error: You have entered an incorrect amount.");
+            System.out.println("=====================================================");
+        }
+
+        Transaction deposit = new Transaction(realDate, realTime,description, vendor, depositDouble);
+        transactions.add(deposit);
         // This method should prompt the user to enter the date, time, vendor, and amount of a deposit.
         // The user should enter the date and time in the following format: yyyy-MM-dd HH:mm:ss
         // The amount should be a positive number.
@@ -113,6 +128,40 @@ public class FinancialTracker {
     }
 
     private static void addPayment(Scanner scanner) {
+        BufferedWriter writer = new BufferedWriter(new FileWriter((FILE_NAME, true));
+
+        System.out.println("Please enter the date in this format: (yyyy-MM-dd)");
+        String inputD = scanner.nextLine();
+        LocalDate realDate = LocalDate.parse(inputD, DATE_FORMATTER);
+        System.out.println(realDate);
+
+        // Prompt the user to enter the time in the specified format and parse it
+        System.out.println("Please enter the time of the deposit in this format: (HH:mm:ss)");
+        String inputT = scanner.nextLine();
+        LocalTime realTime = LocalTime.parse(inputT, TIME_FORMATTER);
+        System.out.println(realTime);
+
+        // Prompt the user to enter the name of the description
+        System.out.println("Please enter the name of the description: ");
+        String description = scanner.nextLine();
+
+        // Prompt the user to enter the name of the vendor
+        System.out.println("Please enter the name of the vendor: ");
+        String vendor = scanner.nextLine();
+
+        // Prompt the user to enter the amount to deposit and validate it
+        System.out.println("Please enter the amount you'd like to deposit: $");
+        double paymentDouble = scanner.nextDouble();
+        scanner.nextLine();
+
+        // Check if the deposit amount is negative and handle the error
+        if (paymentDouble < 0) {
+            System.out.println("Error: You have entered an incorrect amount.");
+            System.out.println("=====================================================");
+        }
+
+        Transaction deposit = new Transaction(realDate, realTime,description, vendor, paymentDouble);
+        transactions.add(deposit);
         // This method should prompt the user to enter the date, time, vendor, and amount of a payment.
         // The user should enter the date and time in the following format: yyyy-MM-dd HH:mm:ss
         // The amount should be a positive number.
@@ -156,19 +205,33 @@ public class FinancialTracker {
     }
 
     private static void displayLedger() {
+        for (Transaction transaction : transactions) {
+            System.out.println(transaction);
+        }
         // This method should display a table of all transactions in the `transactions` ArrayList.
         // The table should have columns for date, time, vendor, type, and amount.
     }
 
     private static void displayDeposits() {
-        // This method should display a table of all deposits in the `transactions` ArrayList.
-        // The table should have columns for date, time, vendor, and amount.
+        for (Transaction transaction : transactions) {
+            if (transaction.getAmount() > 0) {
+                System.out.println(transaction);
+            }
+            // This method should display a table of all deposits in the `transactions` ArrayList.
+            // The table should have columns for date, time, vendor, and amount.
+        }
     }
 
     private static void displayPayments() {
+            for (Transaction transaction : transactions) {
+                if (transaction.getAmount() < 0 ){
+                    System.out.println(transaction);
+                }
+            }
+        }
         // This method should display a table of all payments in the `transactions` ArrayList.
         // The table should have columns for date, time, vendor, and amount.
-    }
+
 
     private static void reportsMenu(Scanner scanner) {
         boolean running = true;
@@ -211,13 +274,21 @@ public class FinancialTracker {
     }
 
 
-    private static void filterTransactionsByDate(LocalDate startDate, LocalDate endDate) {
+
+        private static void filterTransactionsByDate(LocalDate startDate, LocalDate endDate) {
+            System.out.println("Report:");
+            for (Transaction transaction : transactions) {
+                if (transaction.getDate().isAfter(startDate.minusDays(1)) && transaction.getDate().isBefore(endDate.plusDays(1))) {
+                    System.out.println(transaction);
+                }
+            }
+        }
         // This method filters the transactions by date and prints a report to the console.
         // It takes two parameters: startDate and endDate, which represent the range of dates to filter by.
         // The method loops through the transactions list and checks each transaction's date against the date range.
         // Transactions that fall within the date range are printed to the console.
         // If no transactions fall within the date range, the method prints a message indicating that there are no results.
-    }
+
 
     private static void filterTransactionsByVendor(String vendor) {
         // This method filters the transactions by vendor and prints a report to the console.
