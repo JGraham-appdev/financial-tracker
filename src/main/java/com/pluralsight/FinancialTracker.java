@@ -2,7 +2,6 @@ package com.pluralsight;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -10,12 +9,11 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Scanner;
 
 public class FinancialTracker {
 
-    private static ArrayList<Transaction> transactions = new ArrayList<Transaction>();
+    private static ArrayList<Transaction> transactions = new ArrayList<>();
     private static final String FILE_NAME = "transactions.csv";
     private static final String DATE_FORMAT = "yyyy-MM-dd";
     private static final String TIME_FORMAT = "HH:mm:ss";
@@ -86,7 +84,7 @@ public class FinancialTracker {
     }
 
     private static void addDeposit(Scanner scanner) throws IOException {
-        BufferedWriter writer = new BufferedWriter(new FileWriter((FILE_NAME, true));
+        BufferedWriter writer = new BufferedWriter(new FileWriter((FILE_NAME), true));
 
         System.out.println("Please enter the date in this format: (yyyy-MM-dd)");
         String iDate = scanner.nextLine();
@@ -130,7 +128,7 @@ public class FinancialTracker {
     }
 
     private static void addPayment(Scanner scanner) throws IOException {
-        BufferedWriter writer = new BufferedWriter(new FileWriter((FILE_NAME, true));
+        BufferedWriter writer = new BufferedWriter(new FileWriter((FILE_NAME), true));
 
         System.out.println("Please enter the date in this format: (yyyy-MM-dd)");
         String iDate = scanner.nextLine();
@@ -274,7 +272,9 @@ public class FinancialTracker {
                     // Generate a report for all transactions within the previous year,
                     // including the date, vendor, and amount for each transaction.
                 case "5":
-                    searchByVendor();
+                    System.out.println("Please enter the name of the vendor");
+                    String vendor = scanner.nextLine();
+                    filterTransactionsByVendor(vendor);
                     break;
                     // Prompt the user to enter a vendor name, then generate a report for all transactions
                     // with that vendor, including the date, vendor, and amount for each transaction.
@@ -287,9 +287,6 @@ public class FinancialTracker {
         }
     }
 
-    private static void searchByVendor() {
-
-    }
 
     private static void previousYear() {
         LocalDate previousYear = LocalDate.now().minusYears(1);
@@ -308,7 +305,7 @@ public class FinancialTracker {
     private static void previousMonth() {
         LocalDate previousMonth = LocalDate.now().minusMonths(1);
         System.out.println("All transactions in " + previousMonth.getMonth() + ":");
-        filterTransactionsByDate(previousMonth.withDayOfMonth(), previousMonth.withDayOfMonth(previousMonth.lengthOfMonth()));
+        filterTransactionsByDate(previousMonth.withDayOfMonth(1), previousMonth.withDayOfMonth(previousMonth.lengthOfMonth()));
         System.out.println("=================================================================");
     }
 
@@ -336,6 +333,16 @@ public class FinancialTracker {
 
 
     private static void filterTransactionsByVendor(String vendor) {
+        boolean found = false;
+        for (Transaction transaction : transactions) {
+            if (transaction.getVendor().equals(vendor)) {
+                System.out.println(transaction);
+                found = true;
+            }
+        }
+        if (!found) {
+            System.out.println("No transactions found for the vendor: " + vendor);
+        }
         // This method filters the transactions by vendor and prints a report to the console.
         // It takes one parameter: vendor, which represents the name of the vendor to filter by.
         // The method loops through the transactions list and checks each transaction's vendor name against the specified vendor name.
