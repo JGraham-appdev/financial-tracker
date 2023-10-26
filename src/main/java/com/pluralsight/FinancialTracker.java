@@ -118,8 +118,12 @@ public class FinancialTracker {
 
         Transaction deposit = new Transaction(fDate, fTime, description, vendor, depositDouble);
         transactions.add(deposit);
-        writer.write(String.valueOf(deposit));
+
+        String transactionString = String.format("%s|%s|%s|%s|%.2f", fDate.format(DATE_FORMATTER), fTime.format(TIME_FORMATTER), description,vendor, depositDouble);
+        writer.write(transactionString);
+        writer.newLine();
         writer.close();
+        System.out.println("Deposit added successfully");
         // This method should prompt the user to enter the date, time, vendor, and amount of a deposit.
         // The user should enter the date and time in the following format: yyyy-MM-dd HH:mm:ss
         // The amount should be a positive number.
@@ -160,10 +164,16 @@ public class FinancialTracker {
             System.out.println("=====================================================");
         }
 
+        paymentDouble = paymentDouble * -1;
+
         Transaction payment = new Transaction(fDate, fTime,description, vendor, paymentDouble);
         transactions.add(payment);
-        writer.write(String.valueOf(payment));
+
+        String transactionString = String.format("%s|%s|%s|%s|%.2f", fDate.format(DATE_FORMATTER), fTime.format(TIME_FORMATTER), description,vendor, paymentDouble);
+        writer.write(transactionString);
+        writer.newLine();
         writer.close();
+        System.out.println("Deposit added successfully");
         // This method should prompt the user to enter the date, time, vendor, and amount of a payment.
         // The user should enter the date and time in the following format: yyyy-MM-dd HH:mm:ss
         // The amount should be a positive number.
@@ -290,14 +300,14 @@ public class FinancialTracker {
 
     private static void previousYear() {
         LocalDate previousYear = LocalDate.now().minusYears(1);
-        System.out.println("All transactions in" + previousYear.getYear() + ";");
+        System.out.println("All transactions in " + previousYear.getYear() + ";");
         filterTransactionsByDate(previousYear.withDayOfYear(1), previousYear.withDayOfYear(previousYear.lengthOfYear()));
         System.out.println("=================================================================");
     }
 
     private static void yearToDate() {
         LocalDate currentYear = LocalDate.now();
-        System.out.println("All transactions in" + currentYear.getYear() + ":");
+        System.out.println("All transactions in " + currentYear.getYear() + ":");
         filterTransactionsByDate(currentYear.withDayOfYear(1), currentYear);
         System.out.println("=================================================================");
     }
@@ -318,7 +328,7 @@ public class FinancialTracker {
 
 
     private static void filterTransactionsByDate(LocalDate startDate, LocalDate endDate) {
-            System.out.println("Report:");
+            System.out.println("Report: ");
             for (Transaction transaction : transactions) {
                 if (transaction.getDate().isAfter(startDate.minusDays(1)) && transaction.getDate().isBefore(endDate.plusDays(1))) {
                     System.out.println(transaction);
@@ -335,7 +345,7 @@ public class FinancialTracker {
     private static void filterTransactionsByVendor(String vendor) {
         boolean found = false;
         for (Transaction transaction : transactions) {
-            if (transaction.getVendor().equals(vendor)) {
+            if (transaction.getVendor().equalsIgnoreCase(vendor)) {
                 System.out.println(transaction);
                 found = true;
             }
