@@ -22,7 +22,7 @@ public class FinancialTracker {
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern(DATE_FORMAT);
     private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern(TIME_FORMAT);
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         loadTransactions(FILE_NAME);
         Scanner scanner = new Scanner(System.in);
         boolean running = true;
@@ -89,15 +89,15 @@ public class FinancialTracker {
         BufferedWriter writer = new BufferedWriter(new FileWriter((FILE_NAME, true));
 
         System.out.println("Please enter the date in this format: (yyyy-MM-dd)");
-        String inputD = scanner.nextLine();
-        LocalDate realDate = LocalDate.parse(inputD, DATE_FORMATTER);
-        System.out.println(realDate);
+        String iDate = scanner.nextLine();
+        LocalDate fDate = LocalDate.parse(iDate, DATE_FORMATTER);
+        System.out.println(fDate);
 
         // Prompt the user to enter the time in the specified format and parse it
         System.out.println("Please enter the time of the deposit in this format: (HH:mm:ss)");
-        String inputT = scanner.nextLine();
-        LocalTime realTime = LocalTime.parse(inputT, TIME_FORMATTER);
-        System.out.println(realTime);
+        String iTime = scanner.nextLine();
+        LocalTime fTime = LocalTime.parse(iTime, TIME_FORMATTER);
+        System.out.println(fTime);
 
         // Prompt the user to enter the name of the description
         System.out.println("Please enter the name of the description: ");
@@ -118,8 +118,10 @@ public class FinancialTracker {
             System.out.println("=====================================================");
         }
 
-        Transaction deposit = new Transaction(realDate, realTime,description, vendor, depositDouble);
+        Transaction deposit = new Transaction(fDate, fTime, description, vendor, depositDouble);
         transactions.add(deposit);
+        writer.write(String.valueOf(deposit));
+        writer.close();
         // This method should prompt the user to enter the date, time, vendor, and amount of a deposit.
         // The user should enter the date and time in the following format: yyyy-MM-dd HH:mm:ss
         // The amount should be a positive number.
@@ -127,19 +129,19 @@ public class FinancialTracker {
         // The new deposit should be added to the `transactions` ArrayList.
     }
 
-    private static void addPayment(Scanner scanner) {
+    private static void addPayment(Scanner scanner) throws IOException {
         BufferedWriter writer = new BufferedWriter(new FileWriter((FILE_NAME, true));
 
         System.out.println("Please enter the date in this format: (yyyy-MM-dd)");
-        String inputD = scanner.nextLine();
-        LocalDate realDate = LocalDate.parse(inputD, DATE_FORMATTER);
-        System.out.println(realDate);
+        String iDate = scanner.nextLine();
+        LocalDate fDate = LocalDate.parse(iDate, DATE_FORMATTER);
+        System.out.println(fDate);
 
         // Prompt the user to enter the time in the specified format and parse it
         System.out.println("Please enter the time of the deposit in this format: (HH:mm:ss)");
-        String inputT = scanner.nextLine();
-        LocalTime realTime = LocalTime.parse(inputT, TIME_FORMATTER);
-        System.out.println(realTime);
+        String iTime = scanner.nextLine();
+        LocalTime fTime = LocalTime.parse(iTime, TIME_FORMATTER);
+        System.out.println(fTime);
 
         // Prompt the user to enter the name of the description
         System.out.println("Please enter the name of the description: ");
@@ -160,8 +162,10 @@ public class FinancialTracker {
             System.out.println("=====================================================");
         }
 
-        Transaction deposit = new Transaction(realDate, realTime,description, vendor, paymentDouble);
-        transactions.add(deposit);
+        Transaction payment = new Transaction(fDate, fTime,description, vendor, paymentDouble);
+        transactions.add(payment);
+        writer.write(String.valueOf(payment));
+        writer.close();
         // This method should prompt the user to enter the date, time, vendor, and amount of a payment.
         // The user should enter the date and time in the following format: yyyy-MM-dd HH:mm:ss
         // The amount should be a positive number.
@@ -249,19 +253,29 @@ public class FinancialTracker {
 
             switch (input) {
                 case "1":
+                    monthToDate();
+                    break;
                     // Generate a report for all transactions within the current month,
                     // including the date, vendor, and amount for each transaction.
                 case "2":
+                    previousMonth();
+                    break;
                     // Generate a report for all transactions within the previous month,
                     // including the date, vendor, and amount for each transaction.
                 case "3":
+                    yearToDate();
+                    break;
                     // Generate a report for all transactions within the current year,
                     // including the date, vendor, and amount for each transaction.
 
                 case "4":
+                    previousYear();
+                    break;
                     // Generate a report for all transactions within the previous year,
                     // including the date, vendor, and amount for each transaction.
                 case "5":
+                    searchByVendor();
+                    break;
                     // Prompt the user to enter a vendor name, then generate a report for all transactions
                     // with that vendor, including the date, vendor, and amount for each transaction.
                 case "0":
@@ -273,9 +287,40 @@ public class FinancialTracker {
         }
     }
 
+    private static void searchByVendor() {
+
+    }
+
+    private static void previousYear() {
+        LocalDate previousYear = LocalDate.now().minusYears(1);
+        System.out.println("All transactions in" + previousYear.getYear() + ";");
+        filterTransactionsByDate(previousYear.withDayOfYear(1), previousYear.withDayOfYear(previousYear.lengthOfYear()));
+        System.out.println("=================================================================");
+    }
+
+    private static void yearToDate() {
+        LocalDate currentYear = LocalDate.now();
+        System.out.println("All transactions in" + currentYear.getYear() + ":");
+        filterTransactionsByDate(currentYear.withDayOfYear(1), currentYear);
+        System.out.println("=================================================================");
+    }
+
+    private static void previousMonth() {
+        LocalDate previousMonth = LocalDate.now().minusMonths(1);
+        System.out.println("All transactions in " + previousMonth.getMonth() + ":");
+        filterTransactionsByDate(previousMonth.withDayOfMonth(), previousMonth.withDayOfMonth(previousMonth.lengthOfMonth()));
+        System.out.println("=================================================================");
+    }
+
+    private static void monthToDate() {
+        LocalDate currentMonth = LocalDate.now();
+        System.out.println("All transactions in " + currentMonth.getMonth() + ":");
+        filterTransactionsByDate(currentMonth.withDayOfMonth(1), currentMonth);
+        System.out.println("=================================================================");
+    }
 
 
-        private static void filterTransactionsByDate(LocalDate startDate, LocalDate endDate) {
+    private static void filterTransactionsByDate(LocalDate startDate, LocalDate endDate) {
             System.out.println("Report:");
             for (Transaction transaction : transactions) {
                 if (transaction.getDate().isAfter(startDate.minusDays(1)) && transaction.getDate().isBefore(endDate.plusDays(1))) {
