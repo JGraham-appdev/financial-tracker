@@ -1,9 +1,10 @@
 # Financial Tracker
 
-This project was designed to show what I have learned about Java programming so far. With this application you can track all financial transactions for a business or for personal use.
+This project is a result of what I have learned about Java programming so far. This tracker has the ability to show, store, and track all financial transactions for a business or for personal use. 
 
 ### special feature
 <img src="C:\Pluralsight\Capstones\financialTracker\searchByVendor.png"/>
+
 My favorite function of this application is the ability to search for products by vendor. It is such an integral part of many apps that we all use. Without this function, apps like Amazon and YouTube would be way more difficult, maybe even impossible to use efficiently.
 
 ### Setup
