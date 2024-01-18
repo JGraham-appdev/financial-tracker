@@ -63,12 +63,22 @@ public class Transaction {
     //toString
     @Override
     public String toString() {
-        return "com.pluralsight.Transaction{" +
-                "date=" + date +
-                ", time=" + time +
-                ", description='" + description + '\'' +
-                ", vendor='" + vendor + '\'' +
-                ", amount=" + amount +
-                '}';
+        if (getAmount() > 0) {
+            return "Transaction Type: Deposit" +
+                    "\ndate| " + date +
+                    "\ntime| " + time +
+                    "\ndescription| " + description +
+                    "\nvendor| " + vendor  +
+                    "\namount| $" + amount + '\n';
+        } else {
+            return "Transaction Type: Payment" +
+                    "\ndate| " + date +
+                    "\ntime| " + time +
+                    "\ndescription| " + description +
+                    "\nvendor| " + vendor +
+                    "\namount| $" + amount + '\n';
+        }
+
     }
+
 }
