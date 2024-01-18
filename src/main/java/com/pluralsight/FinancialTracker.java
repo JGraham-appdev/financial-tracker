@@ -197,15 +197,19 @@ public class FinancialTracker {
             switch (input.toUpperCase()) {
                 case "A":
                     displayLedger();
+                    separate();
                     break;
                 case "D":
                     displayDeposits();
+                    separate();
                     break;
                 case "P":
                     displayPayments();
+                    separate();
                     break;
                 case "R":
                     reportsMenu(scanner);
+                    separate();
                     break;
                 case "H":
                     running = false;
@@ -358,5 +362,9 @@ public class FinancialTracker {
         // The method loops through the transactions list and checks each transaction's vendor name against the specified vendor name.
         // Transactions with a matching vendor name are printed to the console.
         // If no transactions match the specified vendor name, the method prints a message indicating that there are no results.
+    }
+
+    public static void separate(){
+        System.out.println("=====================================================");
     }
 }
